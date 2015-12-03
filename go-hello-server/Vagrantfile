@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.hostname = "vagrantdocker"
+  if Vagrant.has_plugin?("vagrant-vbguest") then
+    config.vbguest.auto_update = false
+  end
+
+  config.vm.synced_folder ".", "/project"
+ 
+  config.vm.network "forwarded_port", guest: 8000, host: 8010
+  
+  # NB: this provision step seems to take a long time, with no visual feedback
+  config.vm.provision "docker"
+  
+  
+  
+  # So ... would the following be faster?
+  # config.vm.provision "shell", inline: "wget -qO- https://get.docker.com/ | sh 2> /dev/null"
+  # config.vm.provision "shell", inline: "addgroup vagrant docker"
+ 
+end
